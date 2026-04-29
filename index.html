@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/global.css">
+  <title>Home | CottonWorths</title>
+</head>
+
+<body>
+  <header style="display: flex; width: 100%; position: sticky; top: 0px;">
+    <div class="header" style="width: 100%">
+      <a href="./index.html" style="text-decoration: none;">
+        <h1 class="header-brand">
+          CottonWorths
+        </h1>
+      </a>
+      <div style="width: 50%;">
+        <form id="search-form" class="advance-filter-form">
+          <div style="display: flex; flex-direction: column; width: 100%; margin: 8px;">
+            <label class="advance-filter-label">Search product name</label>
+            <input class="input" name="filter-name" placeholder="product name...">
+          </div>
+          <div style="display: flex; flex-direction: column; width: 100%; margin: 8px;">
+            <label class="advance-filter-label">Price Range</label>
+            <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+              <input type="number" placeholder="min price" step="0.01" class="input" style="width: 80px"
+                name="filter-min-price">
+              <div style="width: 20px;"></div>
+              <input type="number" placeholder="max price" step="0.01" class="input" style="width: 80px;"
+                name="filter-max-price">
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; width: 100%; margin: 8px;">
+            <label class="advance-filter-label" style="color: #fafafa;">xxx</label>
+            <button class="button" type="submit"
+              style="padding: 12px; width: 120px; border-radius: 8px; outline-width: 4px;">Search</button>
+          </div>
+        </form>
+      </div>
+      <div style="display: flex; flex-direction: row;">
+        <div id="cart-button" class="icon" style="margin-right: 8px;">
+          <img src="./assets/shopping-cart.svg" width="24px" height="24px">
+        </div>
+      </div>
+    </div>
+  </header>
+  <main style="display: flex; flex-direction: row; align-items: center; width: 100%; height: calc(100vh - 120px);">
+    <div
+      style="display: flex; flex-direction: column; width: 100%; max-width: 320px; height: 100%; background-color: #FAFAFA; border-right: 1px solid #84cc16;">
+      <div id="sidenavs" style="margin: 20px; height: 100%; display: flex; flex-direction: column; overflow-y: auto;">
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: row; width: 100%; height: 100%; overflow-y: auto;">
+      <div style="margin: 20px; width: 100%; display: flex; flex-direction: column;">
+        <h1 style="font-size: 24px; color: #171717; font-weight: 500; margin-bottom: 16px;">Products</h1>
+        <div id="product-list-container" style="display: flex; flex-wrap: wrap;">
+
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="cart-popup"
+    style="display: none; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;">
+    <div id="cart-popup-backdrop" style="position: absolute; background-color: #7f7f7f80; width: 100%; height: 100%;">
+    </div>
+    <div
+      style="position: absolute; min-width: 560px; border-radius: 8px; display: flex; flex-direction: column; padding: 16px 20px; background-color: #fff;">
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2 style="font-size: 24px; font-weight: 500;">Cart</h2>
+        <div>
+          <button id="empty-cart-button" class="button" style="width: fit-content;">Empty Cart</button>
+          <button id="checkout-cart-button" class="button" style="width: fit-content;">Checkout Cart</button>
+        </div>
+      </div>
+      <div style="background-color: #d4d4d4; height: 2px; width: 100%; margin: 8px 0 12px 0;"></div>
+      <div id="cart-popup-list"
+        style="border-bottom: 2px solid #e4e4e4; width: 100%; display: flex; flex-direction: column;">
+      </div>
+      <div id="cart-total" style="text-align: right; margin: 4px 0;">
+      </div>
+      <div id="cart-footer" style="margin: 4px 0;">
+      </div>
+    </div>
+  </div>
+  <div id="order-form-popup"
+    style="display: none; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;">
+    <div id="order-form-popup-backdrop"
+      style="position: absolute; background-color: #7f7f7f80; width: 100%; height: 100%;">
+    </div>
+    <div
+      style="position: absolute; min-width: 560px; border-radius: 8px; display: flex; flex-direction: column; padding: 16px 20px; background-color: #fff;">
+      <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <h2 style="font-size: 24px; font-weight: 500;">Order Form</h2>
+      </div>
+      <div style="background-color: #d4d4d4; height: 2px; width: 100%; margin: 8px 0 12px 0;"></div>
+      <div id="item-purchase-info" style="display: flex; flex-direction: column; align-items: center; width: 100%">
+        <div style="background-color: #d4d4d4; height: 2px; width: 100%; margin: 8px 0 12px 0;"></div>
+      </div>
+      <form id="order-form" style="display: flex; flex-direction: column; align-items: center;">
+        <div style="display: flex; flex-direction: column; width: 100%; padding: 8px 0;">
+          <label class="advance-filter-label">Full name <span style="color: red">*</span></label>
+          <input class="input" name="fullname" placeholder="Full name" required>
+        </div>
+        <div style="display: flex; flex-direction: column; width: 100%; padding: 8px 0;">
+          <label class="advance-filter-label">Email address <span style="color: red">*</span></label>
+          <input class="input" type="email" name="email" placeholder="Email address" required>
+        </div>
+        <div style="display: flex; flex-direction: column; width: 100%; padding: 8px 0;">
+          <label class="advance-filter-label">Address street <span style="color: red">*</span></label>
+          <input class="input" type="text" name="address-street" placeholder="Address street" required>
+        </div>
+        <button class="button" style="margin-top: 12px; padding: 10px 0; font-size: 14px;" type="submit">
+          Place order
+        </button>
+      </form>
+      <div style="height: 8px; width: 100%;"></div>
+    </div>
+  </div>
+  <script type="module">
+    import { productList, productCategoryList } from './js/products.js'
+
+    const sidenavsRef = document.getElementById('sidenavs');
+    const productListContainer = document.getElementById('product-list-container');
+    const searchFormRef = document.getElementById('search-form');
+    const cartButtonRef = document.getElementById('cart-button');
+    const cartPopUpBackdropRef = document.getElementById('cart-popup-backdrop');
+    const cartPopUpRef = document.getElementById('cart-popup');
+    const cartPopUpListRef = document.getElementById('cart-popup-list');
+    const cartFooterRef = document.getElementById('cart-footer');
+    const emptyCartButtonRef = document.getElementById('empty-cart-button');
+    const checkoutCartButtonRef = document.getElementById('checkout-cart-button');
+    const orderFormPopUpRef = document.getElementById('order-form-popup');
+    const orderFormPopUpBackdropRef = document.getElementById("order-form-popup-backdrop");
+    const orderFormRef = document.getElementById('order-form');
+    const itemPurchaseInfoRef = document.getElementById('item-purchase-info')
+
+    let currentProductList = productList;
+    let currentProductCategoryList = productCategoryList;
+    let currentCartItemList = {};
+
+    const checkCartItem = () => {
+      if (Object.keys(currentCartItemList).length === 0) {
+        cartPopUpListRef.innerHTML = `<p style="padding-bottom: 8px;">Cart is empty</p>`;
+
+        checkoutCartButtonRef.disabled = true;
+        checkoutCartButtonRef.classList.add('disabled');
+
+        cartFooterRef.innerHTML = `<div style="display: flex; flex-direction: row; justify-content: space-between;">
+          <p style="font-size: 18px;">Total</p>
+          <p style="font-size: 18px;">$${0}</p>
+        </div>`;
+      } else {
+        checkoutCartButtonRef.disabled = false;
+        checkoutCartButtonRef.classList.remove('disabled');
+        const total = Object.keys(currentCartItemList).reduce((acc, current) => {
+          const product = findProductById(current);
+          acc += product.price * currentCartItemList[current];
+          return acc
+        }, 0);
+
+        cartFooterRef.innerHTML = `<div style="display: flex; flex-direction: row; justify-content: space-between;">
+          <p style="font-size: 18px;">Total</p>
+          <p style="font-size: 18px;">$${total}</p>
+        </div>`;
+      }
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem('productList')) {
+        currentProductList = JSON.parse(localStorage.getItem('productList'));
+      } else {
+        currentProductList = productList;
+        localStorage.setItem('productList', JSON.stringify(currentProductList));
+      }
+
+      if (localStorage.getItem('productCategoryList')) {
+        currentProductCategoryList = JSON.parse(localStorage.getItem('productCategoryList'))
+      } else {
+        currentProductCategoryList = productCategoryList;
+        localStorage.setItem('productCategoryList', JSON.stringify(currentProductCategoryList));
+      }
+
+      if (localStorage.getItem('carts')) {
+        currentCartItemList = JSON.parse(localStorage.getItem('carts'));
+      } else {
+        currentCartItemList = {};
+        localStorage.setItem('carts', JSON.stringify(currentCartItemList));
+      }
+
+      checkCartItem();
+
+      currentProductCategoryList.forEach((category) => {
+        sidenavsRef.innerHTML += constructSidenavLink(category);
+      })
+
+      currentProductCategoryList.forEach((category) => {
+        const sidenavLinkRef = document.getElementById(`sidenav-link-[${category.id}]`);
+
+        sidenavLinkRef.addEventListener('mouseover', function () {
+          sidenavLinkRef.getElementsByClassName('inner-container')[0].style.display = "block";
+        })
+
+        sidenavLinkRef.addEventListener('click', function () {
+          sidenavLinkRef.getElementsByClassName('inner-container')[0].style.display = "block";
+        })
+
+        sidenavLinkRef.addEventListener('mouseout', function () {
+          sidenavLinkRef.getElementsByClassName('inner-container')[0].style.display = "none";
+        })
+
+        category.subcategories.forEach((subcategory) => {
+          const subSidenavLink = document.getElementById(`sub-link-[${subcategory.id}]`);
+
+          const products = currentProductList.filter(product => product.subcategoryId === subcategory.id);
+
+          if (products.length === 0) {
+            subSidenavLink.style.color = "#44403c";
+          }
+
+          subSidenavLink.addEventListener('click', () => loadProductsBySubcategory(subcategory.id))
+        })
+      })
+    }
+
+    const emptyCart = () => {
+      currentCartItemList = {};
+      localStorage.setItem('carts', JSON.stringify(currentCartItemList));
+      checkCartItem();
+    }
+
+    emptyCartButtonRef.addEventListener('click', emptyCart)
+
+    const constructSidenavLink = (item) => {
+      return `
+        <div id="sidenav-link-[${item.id}]" class="sidenav-link">
+          <div class="link">${item.category}</div>
+          <div class="inner-container">
+            ${item.subcategories.map((subcategory) => `<div id="sub-link-[${subcategory.id}]" class="sub-link">${subcategory.name}</div>`).join('')}
+          </div>
+        </div>
+      `
+    }
+
+    const constructProductCard = (product) => {
+      return `
+        <div id="product-[${product.id}]" class="product-card">
+          <img src="${product.imageLink}" width="220" height="220" class="image">
+          <div class="content">
+            <h3 class="title">${product.name}</h3>
+            <p style="font-weight: 500; margin: 12px 0;">$${product.price}</p>
+            <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; font-size: 14px; margin-bottom: 16px;">
+              ${product.quantity > 0 ? `<p class="in-stock">In Stock</p>` : `<p class="out-stock">Out Stock</p>`}
+              <p style="font-size: 14px;">${product.quantity} items</p>
+            </div>
+            <button class="button${product.quantity === 0 ? ' disabled' : ''}" ${product.quantity === 0 ? 'disabled' : ''}>Add Item</button>
+          </div>
+        </div>
+      `
+    }
+
+    const addProductToCart = (product) => {
+      const id = product.id;
+      if (Object.keys(currentCartItemList).length === 0) {
+        currentCartItemList[id] = 1;
+      } else {
+        if (id in currentCartItemList) {
+          if (currentCartItemList[id] < 20 && currentCartItemList[id] < product.quantity) {
+            currentCartItemList[id] += 1;
+            alert(`1 item of ${product.name} has been added to the cart!`)
+          } else {
+            alert(`Item purchase reach the limit!`)
+          }
+        } else {
+          currentCartItemList[id] = 1;
+          alert(`1 item of ${product.name} has been added to the cart!`)
+        }
+      }
+
+
+      // update the local storage when add product
+      localStorage.setItem('carts', JSON.stringify(currentCartItemList));
+    }
+
+    const reduceProductFromCart = (product) => {
+      const id = product.id;
+      if (Object.keys(currentCartItemList).length === 0) {
+        currentCartItemList[id] = 1;
+      } else {
+        if (id in currentCartItemList) {
+          if (currentCartItemList[id] >= 1) {
+            currentCartItemList[id] -= 1;
+            alert(`1 item of ${product.name} has been removed from the cart!`)
+          }
+        }
+      }
+
+
+      if (currentCartItemList[id] === 0) {
+        delete currentCartItemList[id];
+      }
+
+      // update the local storage when remove/reduce product
+      localStorage.setItem('carts', JSON.stringify(currentCartItemList));
+    }
+
+    const renderProductsToDOM = (products) => {
+      productListContainer.innerHTML = "";
+      products.forEach((product) => {
+        productListContainer.innerHTML += constructProductCard(product);
+      })
+
+      products.forEach((product) => {
+        const productCardRef = document.getElementById(`product-[${product.id}]`);
+
+        const addButtonProductCardRef = productCardRef.getElementsByClassName('button')[0];
+
+        addButtonProductCardRef.addEventListener('click', () => addProductToCart(product));
+      })
+    }
+
+    const loadProductsBySubcategory = (subcategoryId) => {
+      const products = currentProductList.filter(product => product.subcategoryId === subcategoryId);
+
+      if (products.length === 0)
+        alert('Product of this subcategory is empty!');
+      else {
+        renderProductsToDOM(products);
+      }
+    };
+
+    const loadProductsBySearchQuery = (e) => {
+      e.preventDefault();
+      const searchData = new FormData(searchFormRef);
+
+      const searchFilterQueries = searchData.get('filter-name').toLowerCase().split(' ');
+      const minFilterPrice = Number(searchData.get('filter-min-price'));
+      const maxFilterPrice = Number(searchData.get('filter-max-price'));
+
+      const products = currentProductList.filter((product) => {
+        const isPartOfQueries = searchFilterQueries.map(query =>
+          product.name.toLowerCase().includes(query)).reduce((a, b) => a + b, 0) === searchFilterQueries.length;
+
+        const isMoreThanMinPrice = product.price >= minFilterPrice;
+        const isLessThanMaxPrice = product.price <= maxFilterPrice;
+
+        if (minFilterPrice === 0 && maxFilterPrice === 0) {
+          return isPartOfQueries;
+        }
+        else if (minFilterPrice === 0) {
+          return isPartOfQueries && isLessThanMaxPrice;
+        } else if (maxFilterPrice === 0) {
+          return isPartOfQueries && isMoreThanMinPrice;
+        }
+
+        return isPartOfQueries && isMoreThanMinPrice && isLessThanMaxPrice;
+      })
+
+      renderProductsToDOM(products);
+    };
+
+    searchFormRef.addEventListener('submit', loadProductsBySearchQuery);
+
+    const findProductById = (productId) => {
+      const product = currentProductList.find(product => product.id === productId);
+
+      return product;
+    };
+
+    const constructCartItem = (product) => {
+      if (product) {
+        return `
+          <div id="cart-item-${product.id}" style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #d4d4d4; border-radius: 4px; padding: 12px 18px; margin: 8px 0;">
+            <div style="display: flex; flex-direction: row; justify-content: space-between;">
+              <img src="${product.imageLink}" width="60" height="60">
+              <div style="margin: 4px 12px; display: flex; flex-direction: column; justify-content: space-between;">
+                <p style="font-weight: 500;">${product.name}</p>
+                <p id="cart-item-price-${product.id}">$${product.price} x <span style="font-weight: 500;">${currentCartItemList[product.id]}</span> items = $${product.price * currentCartItemList[product.id]}</p>
+              </div>  
+            </div>
+            <div style="display: flex; flex-direction: row; justify-content: space-between;">
+              <button class="cart-button cart-quantity-button" style="margin-right: 12px;">+</button>  
+              <button class="cart-button cart-quantity-button">-</button>    
+            </div>
+          </div>
+        `;
+      }
+
+      return "";
+    }
+
+    const updateCartItem = (product) => {
+      const cartItemRef = document.getElementById(`cart-item-${product.id}`);
+      const cartItemPriceRef = document.getElementById(`cart-item-price-${product.id}`);
+
+      cartItemPriceRef.innerHTML = `<p id="cart-item-price">$${product.price} x <span style="font-weight: 500;">${currentCartItemList[product.id]}</span> items = $${product.price * currentCartItemList[product.id]}</p>`
+
+      if (!Object.keys(currentCartItemList).includes(product.id)) {
+        cartItemRef.remove();
+      }
+
+      checkCartItem();
+    }
+
+    const renderCartList = () => {
+      cartPopUpListRef.innerHTML = "";
+
+      Object.keys(currentCartItemList).forEach(productId => {
+        const product = findProductById(productId);
+
+        if (currentCartItemList[product.id] > 0) {
+          cartPopUpListRef.innerHTML += constructCartItem(product);
+        }
+      })
+
+      Object.keys(currentCartItemList).forEach(productId => {
+
+        if (currentCartItemList[productId] > 0) {
+          const cartItemRef = document.getElementById(`cart-item-${productId}`);
+          const cartButtons = cartItemRef.getElementsByClassName('cart-button');
+
+          const addItemButton = cartButtons[0];
+          const removeItemButton = cartButtons[1];
+
+          const product = findProductById(productId);
+
+          addItemButton.addEventListener('click', () => {
+            addProductToCart(product);
+
+            updateCartItem(product);
+          })
+
+          removeItemButton.addEventListener('click', () => {
+            reduceProductFromCart(product);
+
+            updateCartItem(product);
+          })
+        }
+      })
+    }
+
+    const openCartPopUp = () => {
+      cartPopUpRef.style.display = "flex";
+      renderCartList();
+
+      checkCartItem();
+    }
+
+    const closeCartPopUp = () => {
+      cartPopUpRef.style.display = "none";
+    }
+
+    cartButtonRef.addEventListener('click', openCartPopUp);
+    cartPopUpBackdropRef.addEventListener('click', closeCartPopUp);
+
+
+    const openOrderForm = () => {
+      orderFormPopUpRef.style.display = "flex";
+    }
+
+    const closeOrderForm = () => {
+      orderFormPopUpRef.style.display = "none";
+    }
+
+    const handleCheckout = () => {
+      closeCartPopUp();
+      openOrderForm();
+
+      const total = Object.keys(currentCartItemList).reduce((acc, current) => {
+          const product = findProductById(current);
+          acc += product.price * currentCartItemList[current];
+          return acc
+        }, 0);
+
+      const currentContent = itemPurchaseInfoRef.innerHTML;
+
+      itemPurchaseInfoRef.innerHTML = "";
+
+      itemPurchaseInfoRef.innerHTML = `<div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%">
+        <p style="font-size: 18px;">Total</p>
+        <p style="font-size: 18px;">$${total}</p>
+      </div>` + currentContent;
+    }
+
+    checkoutCartButtonRef.addEventListener('click', handleCheckout);
+
+    orderFormPopUpBackdropRef.addEventListener('click', closeOrderForm);
+
+    orderFormRef.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const orderData = new FormData(orderFormRef);
+
+      Object.keys(currentCartItemList).forEach(productId => {
+        const index = currentProductList.findIndex(product => product.id === productId)
+
+        currentProductList[index].quantity -= currentCartItemList[productId];
+      })
+
+      localStorage.setItem('productList', JSON.stringify(currentProductList));
+
+      alert(`Order receipt by ${orderData.get('fullname')} has been sent to ${orderData.get('email')}`)
+
+      emptyCart();
+      closeOrderForm();
+
+      window.location.reload();
+    })
+  </script>
+</body>
+
+</html>
